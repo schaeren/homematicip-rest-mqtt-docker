@@ -1,4 +1,8 @@
-# Homematic IP REST API to MQTT bridge
+# Homematic IP REST API to MQTT bridge (Docker Container)
+
+This fork is used to make a Docker image/container containing the original application with some small extensions.
+
+** IN WORK **
 
 Bridges between Homematic IP components using the REST API (i.e. using an Homematic IP Access Point, not a CCU)
 and an MQTT broker so you can use your home automation software of choice to interact with Homematic IP.
