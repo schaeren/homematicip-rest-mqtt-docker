@@ -5,7 +5,7 @@ This fork is used to make a Docker image/container containing the original appli
 ### How to use
 
 1. Add your `config.ini` to the current directory (see 'Instructions' below on how to generate it).
-2. Download Doker image, create container and start it:
+2. Download Doker image, create container and start it:<br/>
    `docker run --mount type=bind,source=./config.ini,target=/config.ini ghcr.io/schaeren/homematicip-rest-mqtt-docker:latest --server {mqtt-broker} --debug`
 3. Replace `{mqtt-broker}` with the hostname or IP address of your MQTT broker.
    If the MQTT broker requires any login credentials or/and other options you must add these to the command line (see `main.py` for supported command line arguments).
@@ -19,18 +19,18 @@ Prerequisites:
 
 ### How to build the Docker image/container
 
-1. If you haven't already done so: Set up Git
-   `git config --global user.name "Your Name"`
+1. If you haven't already done so: Set up Git<br/
+   `git config --global user.name "Your Name"`<br/
    `git config --global user.email "your.name@email.com"`
-2. Clone the repo
-   `git clone git@github.com:schaeren/homematicip-rest-mqtt-docker.git`
+2. Clone the repo<br/
+   `git clone git@github.com:schaeren/homematicip-rest-mqtt-docker.git`<br/
 3. `cd homematicip-rest-mqtt-docker`
 4. Add your `config.ini` to the current directory (see 'Instructions' below on how to generate it)
-5. Execute the following commands to build the Docker image:
+5. Execute the following commands to build the Docker image:<br/
    `docker build . -t homematicip-rest-mqtt-docker:latest`
-6. To start the container execute:
+6. To start the container execute:<br/
    `docker run --mount type=bind,source=./config.ini,target=/config.ini homematicip-rest-mqtt-docker:latest --server {mqtt-broker} --debug `
-
+   
    Replace `{mqtt-broker}` with the hostname or IP address of your MQTT broker.
    If the MQTT broker requires any login credentials or/and other options you must add these to the command line (see `main.py` for supported command line arguments).
 
@@ -65,117 +65,107 @@ To run as a daemon using systemd, see `homematicip-rest-mqtt.service` for a star
 
 ## Home (alarm state)
 
-
 | Property                                                     | MQTT topic (read)                        | MQTT topic (write)                           |
 | -------------------------------------------------------------- | ------------------------------------------ | ---------------------------------------------- |
-| Current alarm state (`OFF`, `ABSENCE_MODE`, `PRESENCE_MODE`) | `homematicip/home/alarm/<home_id>/state` | `cmd/homematicip/home/alarm/<home_id>/state` |
+| Current alarm state (`OFF`, `ABSENCE_MODE`, `PRESENCE_MODE`) | `homematicip/home/alarm//state` | `cmd/homematicip/home/alarm//state` |
 
 ## Heating group (aka room)
 
-
 | Property                                            | MQTT topic (read)                                   | MQTT topic (write)                              |
 | ----------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------- |
-| Group (room) name                                   | `homematicip/groups/heating/<group_id>/label`       |                                                 |
-| Set point temperature                               | `homematicip/groups/heating/<group_id>/set`         | `cmd/homematicip/groups/heating/<group_id>/set` |
-| Current temperature                                 | `homematicip/groups/heating/<group_id>/temperature` |                                                 |
-| Current humidity                                    | `homematicip/groups/heating/<group_id>/humidity`    |                                                 |
-| Current valve position (0..1)                       | `homematicip/groups/heating/<group_id>/valve`       |                                                 |
-| Current window state (`OPEN`,`CLOSED`,`TILTED`)     | `homematicip/groups/heating/<group_id>/window`      |                                                 |
-| Current control mode (`AUTOMATIC`, `MANUAL`, `ECO`) | `homematicip/groups/heating/<group_id>/mode`        |                                                 |
+| Group (room) name                                   | `homematicip/groups/heating//label`       |                                                 |
+| Set point temperature                               | `homematicip/groups/heating//set`         | `cmd/homematicip/groups/heating//set` |
+| Current temperature                                 | `homematicip/groups/heating//temperature` |                                                 |
+| Current humidity                                    | `homematicip/groups/heating//humidity`    |                                                 |
+| Current valve position (0..1)                       | `homematicip/groups/heating//valve`       |                                                 |
+| Current window state (`OPEN`,`CLOSED`,`TILTED`)     | `homematicip/groups/heating//window`      |                                                 |
+| Current control mode (`AUTOMATIC`, `MANUAL`, `ECO`) | `homematicip/groups/heating//mode`        |                                                 |
 
 ## Heating thermostat (valve)
 
 Homematic IP product codes: HMIP-eTRV, HMIP-eTRV-C
 
-
 | Property                      | MQTT topic (read)                                        | MQTT topic (write) |
 | ------------------------------- | ---------------------------------------------------------- | -------------------- |
-| Low battery state             | `homematicip/devices/thermostat/<device_id>/low_battery` |                    |
-| Set point temperature         | `homematicip/devices/thermostat/<device_id>/set`         |                    |
-| Current temperature           | `homematicip/devices/thermostat/<device_id>/temperature` |                    |
-| Current valve position (0..1) | `homematicip/devices/thermostat/<device_id>/valve`       |                    |
+| Low battery state             | `homematicip/devices/thermostat//low_battery` |                    |
+| Set point temperature         | `homematicip/devices/thermostat//set`         |                    |
+| Current temperature           | `homematicip/devices/thermostat//temperature` |                    |
+| Current valve position (0..1) | `homematicip/devices/thermostat//valve`       |                    |
 
 ## Wall mounted thermostat
 
 Homematic IP product codes: HMIP-WTH, HMIP-WTH-2, HMIP-BWTH
 
-
 | Property              | MQTT topic (read)                                             | MQTT topic (write) |
 | ----------------------- | --------------------------------------------------------------- | -------------------- |
-| Low battery state     | `homematicip/devices/wall_thermostat/<device_id>/low_battery` |                    |
-| Set point temperature | `homematicip/devices/wall_thermostat/<device_id>/set`         |                    |
-| Current temperature   | `homematicip/devices/wall_thermostat/<device_id>/temperature` |                    |
-| Current humidity      | `homematicip/devices/wall_thermostat/<device_id>/humidity`    |                    |
+| Low battery state     | `homematicip/devices/wall_thermostat//low_battery` |                    |
+| Set point temperature | `homematicip/devices/wall_thermostat//set`         |                    |
+| Current temperature   | `homematicip/devices/wall_thermostat//temperature` |                    |
+| Current humidity      | `homematicip/devices/wall_thermostat//humidity`    |                    |
 
 ## Window/contact sensor
 
 Homematic IP product codes: HMIP-SWDO, HMIP-SWDO-I, HMIP-SWDM, HMIP-SWDM-B2, HMIP-SCI, HMIP-SRH
 
-
 | Property                                        | MQTT topic (read)                                    | MQTT topic (write) |
 | ------------------------------------------------- | ------------------------------------------------------ | -------------------- |
-| Low battery state                               | `homematicip/devices/window/<device_id>/low_battery` |                    |
-| Current window state (`OPEN`,`CLOSED`,`TILTED`) | `homematicip/devices/window/<device_id>/state`       |                    |
+| Low battery state                               | `homematicip/devices/window//low_battery` |                    |
+| Current window state (`OPEN`,`CLOSED`,`TILTED`) | `homematicip/devices/window//state`       |                    |
 
 ## Motion detector indoor
 
 Homematic IP product code: HMIP-SMI
 
-
 | Property             | MQTT topic (read)                                                    | MQTT topic (write) |
 | ---------------------- | ---------------------------------------------------------------------- | -------------------- |
-| Low battery state    | `homematicip/devices/motion_detector/<device_id>/low_battery`        |                    |
-| Current illumination | `homematicip/devices/motion_dector/<device_id>/current_illumination` |                    |
-| Illumination         | `homematicip/devices/motion_detector/<device_id>/illumination`       |                    |
-| Motion detected      | `homematicip/devices/motion_detector/<device_id>/motion_detected`    |                    |
+| Low battery state    | `homematicip/devices/motion_detector//low_battery`        |                    |
+| Current illumination | `homematicip/devices/motion_dector//current_illumination` |                    |
+| Illumination         | `homematicip/devices/motion_detector//illumination`       |                    |
+| Motion detected      | `homematicip/devices/motion_detector//motion_detected`    |                    |
 
 ## Smoke detector
 
 Homematic IP product code: HMIP-SWSD
 
-
 | Property          | MQTT topic (read)                                            | MQTT topic (write) |
 | ------------------- | -------------------------------------------------------------- | -------------------- |
-| Low battery state | `homematicip/devices/smoke_detector/<device_id>/low_battery` |                    |
+| Low battery state | `homematicip/devices/smoke_detector//low_battery` |                    |
 
 ## Alarm siren indoor
 
 Homematic IP product code: HMIP-ASIR-2
 
-
 | Property          | MQTT topic (read)                                         | MQTT topic (write) |
 | ------------------- | ----------------------------------------------------------- | -------------------- |
-| Low battery state | `homematicip/devices/alarm_siren/<device_id>/low_battery` |                    |
+| Low battery state | `homematicip/devices/alarm_siren//low_battery` |                    |
 
 ## Weather sensor (basic)
 
 Homematic IP product code: HmIP-SWO-B
 
-
 | Property                        | MQTT topic (read)                                                         | MQTT topic (write) |
 | --------------------------------- | --------------------------------------------------------------------------- | -------------------- |
-| Low battery state               | `homematicip/devices/weather/<device_id>/low_battery`                     |                    |
-| Current temperature             | `homematicip/devices/weather/<device_id>/temperature`                     |                    |
-| Current humidity                | `homematicip/devices/weather/<device_id>/humidity`                        |                    |
-| Current illumination            | `homematicip/devices/weather/<device_id>/illumination`                    |                    |
-| Illumination threshold sunshine | `homematicip/devices/weather/<device_id>/illumination_threshold_sunshine` |                    |
-| Storm                           | `homematicip/devices/weather/<device_id>/storm`                           |                    |
-| Sunshine                        | `homematicip/devices/weather/<device_id>/sunshine`                        |                    |
-| Today sunshine duration         | `homematicip/devices/weather/<device_id>/today_sunshine_duration`         |                    |
-| Total sunshine duration         | `homematicip/devices/weather/<device_id>/total_sunshine_duration`         |                    |
-| Wind value type                 | `homematicip/devices/weather/<device_id>/wind_value_type`                 |                    |
-| Wind speed                      | `homematicip/devices/weather/<device_id>/wind_speed`                      |                    |
-| Yesterday sunshine duration     | `homematicip/devices/weather/<device_id>/yesterday_sunshine_duration`     |                    |
-| Vapor amount                    | `homematicip/devices/weather/<device_id>/vapor_amount`                    |                    |
+| Low battery state               | `homematicip/devices/weather//low_battery`                     |                    |
+| Current temperature             | `homematicip/devices/weather//temperature`                     |                    |
+| Current humidity                | `homematicip/devices/weather//humidity`                        |                    |
+| Current illumination            | `homematicip/devices/weather//illumination`                    |                    |
+| Illumination threshold sunshine | `homematicip/devices/weather//illumination_threshold_sunshine` |                    |
+| Storm                           | `homematicip/devices/weather//storm`                           |                    |
+| Sunshine                        | `homematicip/devices/weather//sunshine`                        |                    |
+| Today sunshine duration         | `homematicip/devices/weather//today_sunshine_duration`         |                    |
+| Total sunshine duration         | `homematicip/devices/weather//total_sunshine_duration`         |                    |
+| Wind value type                 | `homematicip/devices/weather//wind_value_type`                 |                    |
+| Wind speed                      | `homematicip/devices/weather//wind_speed`                      |                    |
+| Yesterday sunshine duration     | `homematicip/devices/weather//yesterday_sunshine_duration`     |                    |
+| Vapor amount                    | `homematicip/devices/weather//vapor_amount`                    |                    |
 
 ## Hoermann Gate Drive
 
 Homematic IP product code: HmIP-MOD-HO
 
-
 | Property                                                      | MQTT topic (read)                                      | MQTT topic (write)                                         |
 | --------------------------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------ |
-| Current door state (`CLOSED`, `OPEN`, `STOP`, `PARTIAL_OPEN`) | `homematicip/devices/hoermann_drive/<device_id>/state` | `cmd/homematicip/devices/hoermann_drive/<device_id>/state` |
+| Current door state (`CLOSED`, `OPEN`, `STOP`, `PARTIAL_OPEN`) | `homematicip/devices/hoermann_drive//state` | `cmd/homematicip/devices/hoermann_drive//state` |
 
 ## Light sensor
 
@@ -187,3 +177,4 @@ MQTT topics:
 - `homematicip/devices/light_sensor/average`: Average illumination
 - `homematicip/devices/light_sensor/highest`: Highest illumination
 - `homematicip/devices/light_sensor/lowest`: Lowest illumination
+
