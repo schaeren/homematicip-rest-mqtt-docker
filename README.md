@@ -19,16 +19,16 @@ Prerequisites:
 
 ### How to build the Docker image/container
 
-1. If you haven't already done so: Set up Git<br/
-   `git config --global user.name "Your Name"`<br/
+1. If you haven't already done so: Set up Git<br/>
+   `git config --global user.name "Your Name"`<br/>
    `git config --global user.email "your.name@email.com"`
-2. Clone the repo<br/
-   `git clone git@github.com:schaeren/homematicip-rest-mqtt-docker.git`<br/
+2. Clone the repo<br/>
+   `git clone git@github.com:schaeren/homematicip-rest-mqtt-docker.git`<br/>
 3. `cd homematicip-rest-mqtt-docker`
 4. Add your `config.ini` to the current directory (see 'Instructions' below on how to generate it)
-5. Execute the following commands to build the Docker image:<br/
+5. Execute the following commands to build the Docker image:<br/>
    `docker build . -t homematicip-rest-mqtt-docker:latest`
-6. To start the container execute:<br/
+6. To start the container execute:<br/>
    `docker run --mount type=bind,source=./config.ini,target=/config.ini homematicip-rest-mqtt-docker:latest --server {mqtt-broker} --debug `
    
    Replace `{mqtt-broker}` with the hostname or IP address of your MQTT broker.
