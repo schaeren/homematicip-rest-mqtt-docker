@@ -1,0 +1,38 @@
+services:
+  hmip2mgtt:
+    container_name: hmip2mgtt
+    image: homematicip-rest-mqtt-docker
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+
+    environment:
+      - HMIP_CONFIG_FILE=/run/secrets/home_hmip_access_og1
+      - MQTT_SERVER=raspi5
+      - MQTT_PORT=18883
+      - MQTT_USERNAME=mqtt_explorer
+      - MQTT_PASSWORD_FILE=/run/secrets/mqtt_broker_password
+      - MQTT_CA_CERT_FILE=/certs/ca.crt
+      - MQTT_CLIENT_CERT_FILE=/certs/client.crt
+      - MQTT_CLIENT_KEY_FILE=/certs/client.key
+      - MQTT_USE_TLS=true
+      # - MQTT_DISABLE_SERVER_CERT=true
+      - MQTT_NO_PUBLISH=false
+    volumes:
+      - /docker/stacks/home/hmip2mqtt_og1/log:/log:rw
+      - /docker/stacks/home/hmip2mqtt_og1/config/logging.json:/config/logging.json:ro
+      - /docker/secrets/home_hmip_access_og1.ini:/config/hmip_access.ini:ro
+      - /docker/secrets/certs/mqtt_client:/certs:ro
+    ports:
+      - 5678:5678
+    secrets:
+      - home_hmip_access_og1
+      - mqtt_broker_password
+    user: 2000:2000
+
+secrets:
+  home_hmip_access_og1:
+    file: /docker/secrets/home_hmip_access_og1.ini
+  mqtt_broker_password:
+    file: /docker/secrets/home_mqtt_broker_password.txt
+    

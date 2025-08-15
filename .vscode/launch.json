@@ -1,0 +1,45 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Remote Attach",
+            "type": "debugpy",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 5678
+            },
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "."
+                }
+            ]
+        },
+        {
+            "name": "Python Debugger: main.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "src/main.py",
+            "justMyCode": false,
+            "args": [
+                "--hmip_config_file",     "/docker/secrets/home_hmip_access_og1.ini",
+                "--server",               "raspi5.local",
+            ],
+            "env": {
+                "MQTT_PORT": "8883",
+                "MQTT_USERNAME": "mqtt_explorer",
+                // "MQTT_PASSWORD": "**********",
+                "MQTT_PASSWORD_FILE": "/docker/secrets/home_mqtt_broker_password.txt",
+                "MQTT_CA_CERT_FILE": "/docker/secrets/certs/mqtt_client/ca.crt",
+                "MQTT_CLIENT_CERT_FILE": "/docker/secrets/certs/mqtt_client/client.crt",
+                "MQTT_CLIENT_KEY_FILE": "/docker/secrets/certs/mqtt_client/client.key",
+                // "MQTT_DISABLE_SERVER_CERT": "true",
+            },
+            "console": "integratedTerminal"
+        }
+    ]
+}
