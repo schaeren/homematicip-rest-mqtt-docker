@@ -1,6 +1,17 @@
 ## Preface to this fork
 
-This fork is used to make a Docker image/container containing the original application.
+This repository [homematicip-rest-mqtt-docker](https://github.com/schaeren/homematicip-rest-mqtt-docker) contains a fork of [homematicip-rest-mqtt](https://github.com/cyraxx/homematicip-rest-mqtt). It wraps the original application into a Docker container for easier installation in Docker environments.
+
+Besides of the dockerizaion it offerts the following improvments:
+- Optional support for SSL/TLS to encrypt/secure communication with the MQTT broker.
+- Optional support for client certificate authentication against the MQTT broker. 
+- Flexible configuration of logger using `logging.json` configuration file.
+
+----------------------------------------------------------------------------------------------------
+
+IN WORK - IN WORK - IN WORK - IN WORK - IN WORK - IN WORK - IN WORK - IN WORK - IN WORK - IN WORK
+
+----------------------------------------------------------------------------------------------------
 
 ### Prerequisites
 
@@ -76,7 +87,7 @@ secrets:
     file: /secrets/mqtt_broker_password.txt
     
 ```
-To use your own logging.json an the extzernal logfile, add the following setting:
+To use your own `logging.json an the external logfile, add the following setting:
 
 ```
 services:
