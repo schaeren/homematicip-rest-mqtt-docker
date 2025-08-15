@@ -2,41 +2,116 @@
 
 This fork is used to make a Docker image/container containing the original application.
 
-### How to use
+### Prerequisites
 
-1. Add your `config.ini` to the current directory (see 'Instructions' below on how to generate it).
-2. Download Doker image, create container and start it:<br/>
-   `docker run --mount type=bind,source=./config.ini,target=/config.ini ghcr.io/schaeren/homematicip-rest-mqtt-docker:latest --server {mqtt-broker} --debug`
-3. Replace `{mqtt-broker}` with the hostname or IP address of your MQTT broker.
-   If the MQTT broker requires any login credentials or/and other options you must add these to the command line (see `main.py` for supported command line arguments).
+- Linux system with Docker installed. I use a Raspberry Pi 5 with Raspberry Pi OS and the [official Docker installation script](https://get.docker.com). 
+- Basic knowledge about docker, some knowledge of Docker Compose would be beneficial, too.
+- MQTT broker. I use [Eclipse Mosquitto](https://mosquitto.org/) as a [separate Docker container](https://hub.docker.com/_/eclipse-mosquitto). With a basic configuration it can be accessed without authentication (use this only in a protected environment)
+- In a production environment or if the MQTT broker can be accessed from the Internet you should protect the access to it with at least username/password or client certificate authentication. If you operate your own MQTT broker, you may also need to generate the self-signed certificates for SSL/TLS and client certificate authentication. It works fine with self-signed certificates.
+- Optional: [MQTT Explorer](https://mqtt-explorer.com/) is a very handy tool for displaying MQTT messages.
 
-Prerequisites:
+### Installation
 
-* Docker (or Docker Desktop)
-* Git (if you want to start with the source code)
-* Python
-* MQTT broker (e.g. Mosquitto)
+Steps to be taken:
+1. Create access token used to access the HomematicIP cloud.
+2. Prepare external files.
+3. Create the compose.yaml.
 
-### How to build the Docker image/container
+#### 1. Create access token
+Create the file containing the access token according to [this instructions](https://github.com/hahn-th/homematicip-rest-api?tab=readme-ov-file#generate-token). The file created will contain the access token used to access your HomematicIP devices through the HomematicIP Cloud. Move it to a secure place! Later it must be bind mounted into the container.
 
-1. If you haven't already done so: Set up Git<br/>
-   `git config --global user.name "Your Name"`<br/>
-   `git config --global user.email "your.name@email.com"`
-2. Clone the repo<br/>
-   `git clone git@github.com:schaeren/homematicip-rest-mqtt-docker.git`<br/>
-3. `cd homematicip-rest-mqtt-docker`
-4. Add your `config.ini` to the current directory (see 'Instructions' below on how to generate it)
-5. Execute the following commands to build the Docker image:<br/>
-   `docker build . -t homematicip-rest-mqtt-docker:latest`
-6. To start the container execute:<br/>
-   `docker run --mount type=bind,source=./config.ini,target=/config.ini homematicip-rest-mqtt-docker:latest --server {mqtt-broker} --debug `
-   
-   Replace `{mqtt-broker}` with the hostname or IP address of your MQTT broker.
-   If the MQTT broker requires any login credentials or/and other options you must add these to the command line (see `main.py` for supported command line arguments).
+#### 2. Prepare external files
+The external files are located outside the container and must be mapped into it (bind mount). Depending on your configuration you need the following external files:
+- [`hmip_access.ini`](doc/hmip_access.ini.md): File with access token for the HomematicIP cloud.
+- [`logging.json`](doc/logging.json.md): Optional file with logging configuraion. The container contains a config file for the logger but you can overwrite it with a external file.
+- `ca.crt`: Optional file with the certificate of the CA (certificate authority). This external file should be provided if SSL/TLS is used to access the MQTT broker.
+- `client.crt` and `client.key`: Optional files with the client certificate (including the public key) and the private key. These external files must be provided if client certificate authentication is used. 
 
-If you want to publish the Docker image into your own GitHub Container Repository (ghcr.io) see the video [Push Docker Images to GitHub Container Registry](https://www.youtube.com/watch?v=RgZyX-e6W9E).
+#### Create the compose.yaml
+The following `compose.yaml` defines a minimal setup with two containers: `hmip2mqtt` and `mqtt_broker`:
 
-** JUST IN WORK ** (Docker compose.yaml may follow)
+
+```
+services:
+  hmip2mqtt:
+    container_name: hmip2mgtt
+    hostname: hmip2mgtt
+    image: ghcr.io/schaeren/homematicip-rest-mqtt-docker:latest
+    environment:
+      - HMIP_CONFIG_FILE=/run/secrets/hmip_access
+      - MQTT_SERVER=mqtt-broker
+    volumes:
+      - /volumes/hmip2mqtt/log:/log:rw
+    networks:
+      - internal_network
+    secrets:
+      - hmip_access
+      - mqtt_broker_password
+    restart: unless-stopped
+    depends_on:
+      - mqtt_broker
+
+  container_name: mqtt_broker
+    image: eclipse-mosquitto
+    hostname: mqtt-broker
+    environment:
+      - TZ=Europe/Zurich
+      - PUID=2000
+      - PGID=2000
+    volumes:
+      - /volumes/mqtt_broker/config:/mosquitto/config:rw # :ro -> creates messages in log
+      - /volumes/mqtt_broker/data:/mosquitto/data:rw
+      - /volumes/mqtt_broker/log:/mosquitto/log:rw
+      - /secrets/certs/mqtt_broker:/mosquitto/certs:rw # :ro -> creates messages in log
+    networks:
+      - internal_network
+    ports:
+      - 8883:8883
+    restart: unless-stopped
+    
+secrets:
+  hmip_access:
+    file: /secrets/hmip_access.ini
+  mqtt_broker_password:
+    file: /secrets/mqtt_broker_password.txt
+    
+```
+To use your own logging.json an the extzernal logfile, add the following setting:
+
+```
+services:
+  hmip2mqtt:
+    ...
+    volumes:
+      ...
+      - /volumes/hmip2mqtt/log:/log:rw
+      - /volumes/hmip2mqtt/config/logging.json:/config/logging.json:ro
+```
+
+To use SSL/TLS and client certificates, add the following settings:
+
+```
+services:
+  hmip2mqtt:
+    ...
+    environment:
+      - ...
+      - MQTT_PORT=18883
+      - MQTT_USERNAME=mqtt_user
+      - MQTT_PASSWORD_FILE=/run/secrets/mqtt_broker_password
+      - MQTT_CA_CERT_FILE=/certs/ca.crt
+      - MQTT_CLIENT_CERT_FILE=/certs/client.crt
+      - MQTT_CLIENT_KEY_FILE=/certs/client.key
+      - MQTT_USE_TLS=true
+    volumes:
+      ...
+      - /secrets/certs/mqtt_client:/certs:ro    
+```
+----------------------------------------------------------------------------------------------------
+
+ORIGINAL DOCUMENTATION FROM [homematicip-rest-mqtt](https://github.com/cyraxx/homematicip-rest-mqtt)
+
+----------------------------------------------------------------------------------------------------
 
 # Homematic IP REST API to MQTT bridge (Docker Container)
 
