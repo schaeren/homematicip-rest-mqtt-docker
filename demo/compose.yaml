@@ -1,0 +1,36 @@
+services:
+
+  hmip2mqtt:
+    container_name: hmip2mqtt
+    image: ghcr.io/schaeren/homematicip-rest-mqtt-docker:latest
+    environment:
+      - HMIP_CONFIG_FILE=/config/hmip_access.ini
+      - MQTT_SERVER=mqtt_broker
+    volumes:
+      - ./secrets/hmip_access.ini:/config/hmip_access.ini:ro
+    networks:
+      - mqtt_network
+    restart: unless-stopped
+    depends_on:
+      - mqtt_broker
+
+  mqtt_broker:
+    container_name: mqtt_broker
+    image: eclipse-mosquitto
+    volumes:
+      - ./mqtt_broker/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    networks:
+      - mqtt_network
+    ports:
+      - 1883:1883
+    restart: unless-stopped
+
+networks:
+  mqtt_network:
+    driver: bridge
+
+secrets:
+  hmip_access:
+    file: ./secrets/hmip_access.ini
+  mqtt_broker_password:
+    file: ./secrets/mqtt_broker_password.txt

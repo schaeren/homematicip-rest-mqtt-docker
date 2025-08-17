@@ -1,7 +1,8 @@
 **/__pycache__
 **/.venv
 **/*.*proj.user
+**/log/
 
+hmip_access.ini
+*.tmp
 *.ini
-/config/*.ini
-/secrets

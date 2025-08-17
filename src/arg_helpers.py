@@ -66,7 +66,7 @@ class CmdLineParser:
         _default_logging_config_file = "/config/logging.ini"
 
         parser = argparse.ArgumentParser()
-        parser.add_argument('--hmip_config_file', '--config', help="Path to the config file used to access the Homematic IP cloud, default: see https://github.com/hahn-th/homematicip-rest-api?tab=readme-ov-file#pathes-for-configini")
+        parser.add_argument('--hmip_config_file', '--config', help="Path to the config file used to access the Homematic IP cloud, default: -")
         parser.add_argument('--server', help="Hostname od IP address of the MQTT broker, default: localhost")
         parser.add_argument('--port', type=int, help="Port number of the MQTT broker, default: 1883")
         parser.add_argument('--username', help="Username for the MQTT broker, default: none")

@@ -21,7 +21,6 @@ services:
     volumes:
       - /docker/stacks/home/hmip2mqtt_og1/log:/log:rw
       - /docker/stacks/home/hmip2mqtt_og1/config/logging.json:/config/logging.json:rw
-      - /docker/secrets/home_hmip_access_og1.ini:/config/hmip_access.ini:ro
       - /docker/secrets/certs/mqtt_client:/certs:ro
     ports:
       - 5678:5678
@@ -32,6 +31,7 @@ services:
 
 secrets:
   home_hmip_access_og1:
-    file: /docker/secrets/home_hmip_access_og1.ini
+#    file: /docker/secrets/home_hmip_access_og1.ini
+    file: /home/peter/dev/docker/compose/hmip2mqtt/hmip_access.ini
   mqtt_broker_password:
     file: /docker/secrets/home_mqtt_broker_password.txt  

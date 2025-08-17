@@ -1,0 +1,57 @@
+services:
+
+  hmip2mqtt:
+    container_name: hmip2mqtt
+    image: ghcr.io/schaeren/homematicip-rest-mqtt-docker:latest
+    environment:
+      - HMIP_CONFIG_FILE=/config/hmip_access.ini
+      - MQTT_SERVER=mqtt_broker
+      - MQTT_PORT=8883  # this port requires client certificate but no username/password
+      - MQTT_CA_CERT_FILE=/certs/ca.crt
+      - MQTT_CLIENT_CERT_FILE=/certs/client.crt
+      - MQTT_CLIENT_KEY_FILE=/certs/client.key
+      - MQTT_USE_TLS=true
+      - MQTT_NO_PUBLISH=false
+    volumes:
+      - ./hmip2mqtt/config/logging.json:/config/logging.json:ro
+      - ./hmip2mqtt/log:/log:rw
+      - ./secrets/hmip_access.ini:/config/hmip_access.ini:ro
+      - ./secrets/certs/ca/ca.crt:/certs/ca.crt:ro
+      - ./secrets/certs/hmip2mqtt/client.crt:/certs/client.crt
+      - ./secrets/certs/hmip2mqtt/client.key:/certs/client.key
+    networks:
+      - mqtt_network
+    secrets:
+      - mqtt_broker_password
+    restart: unless-stopped
+    depends_on:
+      - mqtt_broker
+
+  mqtt_broker:
+    container_name: mqtt_broker
+    image: eclipse-mosquitto
+    volumes:
+      # Remark: :ro -> creates messages in log, so we don't use it here
+      - ./mqtt_broker/config/mosquitto_2.conf:/mosquitto/config/mosquitto.conf
+      - ./mqtt_broker/data:/mosquitto/data
+      - ./mqtt_broker/log:/mosquitto/log
+      - ./secrets/certs/ca/ca.crt:/mosquitto/certs/ca.crt
+      - ./secrets/certs/mqtt_broker/server.crt:/mosquitto/certs/server.crt
+      - ./secrets/certs/mqtt_broker/server.key:/mosquitto/certs/server.key
+    networks:
+      - mqtt_network
+    ports:
+      # See ./mqtt_broker/config/mosquitto_2.conf to see which port allows which authentication.
+      # Do not map port 1883, i.e. anonymous access is allowed only Docker internally, i.e from network mqtt_network.
+      # - 1883:1883
+      - 18883:18883  # requires username/password authentication
+      - 8883:8883    # requires client certificate authentication
+    restart: unless-stopped
+
+networks:
+  mqtt_network:
+    driver: bridge
+
+secrets:
+  mqtt_broker_password:
+    file: ./secrets/mqtt_broker_password.txt
