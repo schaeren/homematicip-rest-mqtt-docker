@@ -47,6 +47,7 @@ Remark: Command line options take precedence over environment variables.
 | --use_tls | MQTT_USE_TLS | true if port != 1883 | Use TSL for the MQTT connection, true/false. |
 | --disable_server_cert | MQTT_DISABLE_SERVER_CERT | false | Disable server certificate verification (if TLS is enabled), true/false.<br/> **Important: Should be disabled only in a isolated / secure environment and only for debugging, if at all.** |
 | --no_publish | MQTT_NO_PUBLISH | false | Don't actually publish messages (log only), true/false- |
+| --base_topic | MQTT_BASE_TOPIC | homematicip | Base topic, i.e. the top-level path element for all MQTT topics |
 
 <br/>
 

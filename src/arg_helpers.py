@@ -76,6 +76,7 @@ class CmdLineParser:
         parser.add_argument('--client_key_file', help="Abolute or relative path to the client private key file, default: none")
         parser.add_argument('--use_tls', help="Use TSL for the MQTT connection, true/false, default: true if port number is not 1880 else false")
         parser.add_argument('--disable_server_cert', help="Disable server certificate verification (if TLS is enabled), true/false, default: false")
+        parser.add_argument('--base_topic', help="Base topic, i.e. the top-level path for all MQTT topics, default: homematicip")
         parser.add_argument('--no_publish', help="Don't actually publish messages (log only), true/false, default: false")
         args = parser.parse_args()
 
@@ -90,6 +91,7 @@ class CmdLineParser:
         self.client_key_file     = self._get_arg_str(  args.client_key_file,      "MQTT_CLIENT_KEY_FILE",     None)
         self.use_tls             = self._get_arg_bool( args.use_tls,              "MQTT_USE_TLS",             self.port != 1883)
         self.disable_server_cert = self._get_arg_bool( args.disable_server_cert,  "MQTT_DISABLE_SERVER_CERT", False)
+        self.base_topic          = self._get_arg_str(  args.base_topic,           "MQTT_BASE_TOPIC",          "homematicip")
         self.no_publish          = self._get_arg_bool( args.no_publish,           "MQTT_NO_PUBLISH",          False)
 
         self.__logger.info(f"Start parameters:")
@@ -103,6 +105,7 @@ class CmdLineParser:
         self.__logger.info(f"  --client_key_file: {self.client_key_file if self.client_key_file else '<not set>'}")
         self.__logger.info(f"  --use_tls: {self.use_tls}")
         self.__logger.info(f"  --disable_server_cert: {self.disable_server_cert}")
+        self.__logger.info(f"  --base_topic: {self.base_topic}")
         self.__logger.info(f"  --no_publish: {self.no_publish}")
 
         # Validate some arguments

@@ -136,9 +136,9 @@ async def main():
 
 async def setup_mqtt_client(mqtt_client):
     # Subscribe to topics
-    await mqtt_client.subscribe("cmd/homematicip/groups/heating/+/set")
-    await mqtt_client.subscribe("cmd/homematicip/devices/hoermann_drive/+/state")
-    await mqtt_client.subscribe("cmd/homematicip/home/alarm/+/state")
+    await mqtt_client.subscribe(f"cmd/{cmd_line.base_topic}/groups/heating/+/set")
+    await mqtt_client.subscribe(f"cmd/{cmd_line.base_topic}/devices/hoermann_drive/+/state")
+    await mqtt_client.subscribe(f"cmd/{cmd_line.base_topic}/home/alarm/+/state")
 
     logger.debug("Performing initial group sync")
     for group in home.groups:
@@ -274,7 +274,7 @@ async def process_homematic_payload(payload):
         logger.debug(f"No MQTT client available to publish event for {payload}")
         return
 
-    topic = "homematicip/"
+    topic = cmd_line.base_topic + "/"
 
     if isinstance(payload, HeatingGroup):
         topic += f"groups/heating/{payload.id}"

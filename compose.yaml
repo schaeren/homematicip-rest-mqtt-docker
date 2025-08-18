@@ -1,4 +1,5 @@
 services:
+
   hmip2mgtt:
     container_name: hmip2mgtt
     image: homematicip-rest-mqtt-docker
@@ -7,9 +8,9 @@ services:
       dockerfile: ./Dockerfile
 
     environment:
-      - HMIP_CONFIG_FILE=/run/secrets/home_hmip_access_og1
-      - MQTT_SERVER=raspi5
-      - MQTT_PORT=18883
+      - HMIP_CONFIG_FILE=/run/secrets/hmip_access
+      - MQTT_SERVER=raspi6
+      - MQTT_PORT=8883
       - MQTT_USERNAME=mqtt_explorer
       - MQTT_PASSWORD_FILE=/run/secrets/mqtt_broker_password
       - MQTT_CA_CERT_FILE=/certs/ca.crt
@@ -18,21 +19,46 @@ services:
       - MQTT_USE_TLS=true
       # - MQTT_DISABLE_SERVER_CERT=true
       - MQTT_NO_PUBLISH=false
+      - MQTT_BASE_TOPIC=hmip_ug
     volumes:
-      - /docker/stacks/home/hmip2mqtt_og1/log:/log:rw
-      - /docker/stacks/home/hmip2mqtt_og1/config/logging.json:/config/logging.json:ro
-      - /docker/secrets/home_hmip_access_og1.ini:/config/hmip_access.ini:ro
-      - /docker/secrets/certs/mqtt_client:/certs:ro
-    ports:
-      - 5678:5678
+      - ./demo/hmip2mqtt/config/logging.json:/config/logging.json:ro
+      - ./demo/hmip2mqtt/log:/log:rw
+      - ./demo/secrets/certs/ca/ca.crt:/certs/ca.crt:ro
+      - ./demo/secrets/certs/hmip2mqtt/client.crt:/certs/client.crt:ro
+      - ./demo/secrets/certs/hmip2mqtt/client.key:/certs/client.key:ro
+#    ports:
+#      - 5678:5678
     secrets:
-      - home_hmip_access_og1
+      - hmip_access
       - mqtt_broker_password
-    user: 2000:2000
+#    user: 2000:2000
+
+  mqtt_broker:
+    container_name: mqtt_broker
+    image: eclipse-mosquitto
+    volumes:
+      # Remark: :ro -> creates messages in log, so we don't use it here
+      - ./demo/mqtt_broker/config/mosquitto_2.conf:/mosquitto/config/mosquitto.conf
+      - ./demo/mqtt_broker/data:/mosquitto/data
+      - ./demo/mqtt_broker/log:/mosquitto/log
+      - ./demo/secrets/certs/ca/ca.crt:/mosquitto/certs/ca.crt
+      - ./demo/secrets/certs/mqtt_broker/server.crt:/mosquitto/certs/server.crt
+      - ./demo/secrets/certs/mqtt_broker/server.key:/mosquitto/certs/server.key
+    networks:
+      - mqtt_network
+    ports:
+      # - 1883:1883
+      - 18883:18883  # requires username/password authentication
+      - 8883:8883    # requires client certificate authentication
+    restart: unless-stopped
+
+networks:
+  mqtt_network:
+    driver: bridge
 
 secrets:
-  home_hmip_access_og1:
-    file: /docker/secrets/home_hmip_access_og1.ini
+  hmip_access:
+    file: ./demo/secrets/hmip_access.ini
   mqtt_broker_password:
-    file: /docker/secrets/home_mqtt_broker_password.txt
+    file: ./demo/secrets/mqtt_broker_password.txt
     

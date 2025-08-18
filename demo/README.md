@@ -228,8 +228,8 @@ services:
       - ./hmip2mqtt/log:/log:rw
       - ./secrets/hmip_access.ini:/config/hmip_access.ini:ro
       - ./secrets/certs/ca/ca.crt:/certs/ca.crt:ro
-      - ./secrets/certs/hmip2mqtt/client.crt:/certs/client.crt
-      - ./secrets/certs/hmip2mqtt/client.key:/certs/client.key
+      - ./secrets/certs/hmip2mqtt/client.crt:/certs/client.crt:ro
+      - ./secrets/certs/hmip2mqtt/client.key:/certs/client.key:ro
     networks:
       - mqtt_network
     secrets:

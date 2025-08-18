@@ -26,18 +26,19 @@
             "program": "src/main.py",
             "justMyCode": false,
             "args": [
-                "--hmip_config_file",     "/docker/secrets/home_hmip_access_og1.ini",
-                "--server",               "raspi5.local",
+                "--hmip_config_file",     "demo/secrets/hmip_access.ini",
+                "--server",               "raspi6",
             ],
             "env": {
                 "MQTT_PORT": "8883",
                 "MQTT_USERNAME": "mqtt_explorer",
                 // "MQTT_PASSWORD": "**********",
-                "MQTT_PASSWORD_FILE": "/docker/secrets/home_mqtt_broker_password.txt",
-                "MQTT_CA_CERT_FILE": "/docker/secrets/certs/mqtt_client/ca.crt",
-                "MQTT_CLIENT_CERT_FILE": "/docker/secrets/certs/mqtt_client/client.crt",
-                "MQTT_CLIENT_KEY_FILE": "/docker/secrets/certs/mqtt_client/client.key",
+                "MQTT_PASSWORD_FILE": "demo/secrets/mqtt_broker_password.txt",
+                "MQTT_CA_CERT_FILE": "demo/secrets/certs/ca/ca.crt",
+                "MQTT_CLIENT_CERT_FILE": "demo/secrets/certs/hmip2mqtt/client.crt",
+                "MQTT_CLIENT_KEY_FILE": "demo/secrets/certs/hmip2mqtt/client.key",
                 // "MQTT_DISABLE_SERVER_CERT": "true",
+                "MQTT_BASE_TOPIC": "hmip_ug",
             },
             "console": "integratedTerminal"
         }
