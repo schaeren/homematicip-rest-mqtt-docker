@@ -4,5 +4,6 @@
 **/log/
 
 hmip_access.ini
+*.db
 *.tmp
 *.ini
