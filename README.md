@@ -12,7 +12,8 @@ in addition to dockerization, this solution offers the following improvements:
 # Prerequisites
 
 - Your Homematic IP devices have been configured in the Homematic IP app (Android or iOS).
-- Linux system with Docker installed. I use a Raspberry Pi 5 with Raspberry Pi OS and the [official Docker installation script](https://get.docker.com).
+- Linux system with Docker installed. I use a Raspberry Pi 5 with Raspberry Pi OS and the [official Docker installation script](https://get.docker.com).<br/>
+Remark: Although the image was created for the `linux/arm64` platform, it could also be installed and put into operation on a Windows 11 PC with WSL 2 (Windows Subsystem for Linux) and Docker Desktop without any problems (platform `linux/amd64/v3`).
 - MQTT Broker, e.g. [Eclipse Mosquitto](https://mosquitto.org/). I use the [official Docker image](https://hub.docker.com/_/eclipse-mosquitto). With a basic configuration it can be accessed without authentication (use this only in a protected / isolated environment).
 - Basic knowledge of MQTT, Docker and Docker Compose.
 

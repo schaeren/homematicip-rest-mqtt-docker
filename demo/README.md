@@ -126,7 +126,8 @@ The extended configuration expands on the [minimal configuration](#MinimalConfig
     See [`.../demo/mqtt_broker/config/mosquitto_2.conf`](./mqtt_broker/config/mosquitto_2.conf).
   - Use TLS with self-signed certificates for communication<br/>
     `.../demo/secrets/certs/ca/ca.crt`, `secrets/certs/mqtt_broker/server.crt` and `.../server.key`<br/>
-    See [.../demo/secrets/certs/mqtt_broker/create_server_certificate.bash](./secrets/certs/mqtt_broker/create_server_certificate.bash) and [.../secrets/certs/mqtt_broker/server.cnf](./secrets/certs/mqtt_broker/server.cnf) to find out how to create the server certificate.
+    See [.../demo/secrets/certs/mqtt_broker/create_server_certificate.bash](./secrets/certs/mqtt_broker/create_server_certificate.bash) and [.../secrets/certs/mqtt_broker/server.cnf](./secrets/certs/mqtt_broker/server.cnf) to find out how to create the server certificate.<br/>
+    **IMPORTANT: You should change the hostnames (DNS.\*) and IP address (IP.\*) in [.../secrets/certs/mqtt_broker/server.cnf](./secrets/certs/mqtt_broker/server.cnf) to correspond with your Docker host.**
   - Use external logfile in directory `.../demo/mqtt_broker/log/`.
 
 [`.../demo/compose_2.yaml`](./compose_2.yaml)
@@ -199,7 +200,8 @@ The following configuration uses client certificate authentication instead of us
   -  Use (self-signed) client certificate for authentication. The MQTT broker gets the username from the subject (CN=...) in the client certificate. I.e. no username or password is required.<br/>
   The MQTT broker assumes that only authenticated clients have valid certificates.<br/>
   Client certificate: `.../demo/secrets/certs/ca/ca.crt`, `secrets/certs/hmip2mqtt/client.crt` abd `.../client.key`.<br/>
-  See [.../secrets/certs/hmip2mqtt/create_client_certificate.bash](./secrets/certs/hmip2mqtt/create_client_certificate.bash) and [.../demo/secrets/certs/hmip2mqtt/client.cnf](./secrets/certs/hmip2mqtt/client.cnf) to find out how to create the client certificate.
+  See [.../secrets/certs/hmip2mqtt/create_client_certificate.bash](./secrets/certs/hmip2mqtt/create_client_certificate.bash) and [.../demo/secrets/certs/hmip2mqtt/client.cnf](./secrets/certs/hmip2mqtt/client.cnf) to find out how to create the client certificate.<br/>
+  **IMPORTANT: The client certificate's subject (`CN = hmip2mqtt`) defines the username used by the MQTT server, in this case `hmip2mqtt`.**
 
 - Container `mqtt_broker`
   - Disabled external access using port 1888, i.e. anonymous access is only allowed from other containers using the same Docker network `mqtt_network`.
